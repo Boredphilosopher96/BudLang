@@ -21,19 +21,19 @@ func NewLexer(input string) *Lexer {
 }
 
 func (l *Lexer) readChar() {
-	if l.position >= len(l.input) {
+	if l.readPosition >= len(l.input) {
 		l.c = 0
 	} else {
 		l.c = l.input[l.readPosition]
 	}
-	l.readPosition = l.position
-	l.position += 1
+	l.position = l.readPosition
+	l.readPosition += 1
 }
 
 func (l *Lexer) NextToken() token.Token {
 	var t token.Token
 
-    l.eatWhiteSpace()
+	l.eatWhiteSpace()
 
 	switch l.c {
 	case '=':
