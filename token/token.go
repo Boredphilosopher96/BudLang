@@ -13,11 +13,20 @@ const (
 
 	IDENT = "IDENT"
 	INT   = "INT"
+    FLOAT = "FLOAT"
 
 	ASSIGN   = "="
 	PLUS     = "+"
-	DIVIDE   = "/"
-	MULTIPLY = "*"
+	MINUS    = "-"
+	BANG     = "!"
+	ASTERISK = "*"
+	SLASH    = "/"
+
+	LT = "<"
+	GT = ">"
+
+	EQ     = "=="
+	NOT_EQ = "!="
 
 	COMMA     = ","
 	SEMICOLON = ";"
@@ -27,10 +36,17 @@ const (
 	LBRACE = "{"
 	RBRACE = "}"
 
-	FUNCTION = "FUNCTION"
+    FUNCTION = "FUNCTION"
 	LET      = "LET"
+	TRUE     = "TRUE"
+	FALSE    = "FALSE"
+	IF       = "IF"
+	ELSE     = "ELSE"
+	RETURN   = "RETURN"
+
 )
 
-func NewToken(tokenType Token.TokenType, c byte) Token {
-	return Token{Token.Type: tokenType, Token.Literal: str(c)}
+func NewToken(tokenType TokenType, c byte) Token {
+	return Token{Type: tokenType, Literal: string(c)}
 }
+
