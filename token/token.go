@@ -13,7 +13,7 @@ const (
 
 	IDENT = "IDENT"
 	INT   = "INT"
-    FLOAT = "FLOAT"
+	// FLOAT = "FLOAT" - TODO need to implement this later as an exercise
 
 	ASSIGN   = "="
 	PLUS     = "+"
@@ -36,17 +36,34 @@ const (
 	LBRACE = "{"
 	RBRACE = "}"
 
-    FUNCTION = "FUNCTION"
+	FUNCTION = "FUNCTION"
 	LET      = "LET"
 	TRUE     = "TRUE"
 	FALSE    = "FALSE"
 	IF       = "IF"
 	ELSE     = "ELSE"
 	RETURN   = "RETURN"
-
+	FOR      = "FOR"
 )
 
 func NewToken(tokenType TokenType, c byte) Token {
 	return Token{Type: tokenType, Literal: string(c)}
 }
 
+var keywords = map[string]TokenType{
+	"fn":     FUNCTION,
+	"let":    LET,
+	"true":   TRUE,
+	"false":  FALSE,
+	"if":     IF,
+	"else":   ELSE,
+	"return": RETURN,
+	"for":    FOR,
+}
+
+func LookupKeywords(s string) TokenType {
+	if token, ok := keywords[s]; ok {
+		return token
+	}
+	return IDENT
+}

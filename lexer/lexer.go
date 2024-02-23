@@ -27,16 +27,22 @@ func (l *Lexer) readChar() {
 		l.c = l.input[l.readPosition]
 	}
 	l.readPosition = l.position
-	l.readPosition += 1
+	l.position += 1
 }
 
 func (l *Lexer) NextToken() token.Token {
 	var t token.Token
 
+    l.eatWhiteSpace()
+
 	switch l.c {
 	case '=':
-		t = token.NewToken(token.ASSIGN, l.c)
-
+		if l.peekChar() == '=' {
+			l.readChar()
+			t = token.Token{Type: token.EQ, Literal: "=="}
+		} else {
+			t = token.NewToken(token.ASSIGN, l.c)
+		}
 	case '(':
 		t = token.NewToken(token.LPAREN, l.c)
 
@@ -62,8 +68,12 @@ func (l *Lexer) NextToken() token.Token {
 		t = token.NewToken(token.ASTERISK, l.c)
 
 	case '!':
-		t = token.NewToken(token.BANG, l.c)
-
+		if l.peekChar() == '=' {
+			l.readChar()
+			t = token.Token{Type: token.NOT_EQ, Literal: "!="}
+		} else {
+			t = token.NewToken(token.BANG, l.c)
+		}
 	case '<':
 		t = token.NewToken(token.LT, l.c)
 
@@ -83,6 +93,11 @@ func (l *Lexer) NextToken() token.Token {
 	default:
 		if isAllowedChar(l.c) {
 			t.Literal = l.multiCharToken()
+			t.Type = token.LookupKeywords(t.Literal)
+			return t
+		} else if isAllowedDigit(l.c) {
+			t.Literal = l.getDigits()
+			t.Type = token.INT
 			return t
 		} else {
 			t = token.NewToken(token.ILLEGAL, l.c)
@@ -94,8 +109,16 @@ func (l *Lexer) NextToken() token.Token {
 }
 
 func (l *Lexer) multiCharToken() string {
-    spos := l.position
+	spos := l.position
 	for isAllowedChar(l.c) {
+		l.readChar()
+	}
+	return l.input[spos:l.position]
+}
+
+func (l *Lexer) getDigits() string {
+	spos := l.position
+	for isAllowedDigit(l.c) {
 		l.readChar()
 	}
 	return l.input[spos:l.position]
@@ -103,4 +126,25 @@ func (l *Lexer) multiCharToken() string {
 
 func isAllowedChar(c byte) bool {
 	return (c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'a') || c == '_'
+}
+
+func isAllowedDigit(c byte) bool {
+	return c >= '0' && c <= '9'
+}
+
+func (l *Lexer) peekChar() byte {
+	if l.position >= len(l.input) {
+		return 0
+	}
+	return l.input[l.readPosition]
+}
+
+func (l *Lexer) eatWhiteSpace() {
+	for isWhiteSpace(l.c) {
+		l.readChar()
+	}
+}
+
+func isWhiteSpace(b byte) bool {
+	return b == ' ' || b == '\n' || b == '\t' || b == '\r'
 }
