@@ -46,5 +46,5 @@ type LetStatement struct {
 	Name  *Identifier
 }
 
-func (l *LetStatement) statementNode() {}
+func (l *LetStatement) statementNode()       {}
 func (l *LetStatement) TokenLiteral() string { return l.Token.Literal }

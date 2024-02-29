@@ -31,8 +31,17 @@ func (p *Parser) ParseProgram() *ast.Program {
 	prog := &ast.Program{}
 	prog.Statements = []ast.Statement{}
 
-	for p.curToken.Tyoe != token.EOF {
+	for p.curToken.Type != token.EOF {
 		s := p.parseStatement()
+
+		// case token.RETURN:
+		//     return p.parseReturnStatement()
+		// case token.IF:
+		//     return p.parseIfStatement()
+		// case token.FOR:
+		//     return p.parseForStatement()
+		// case token.ELSE:
+		//     return p.parseElseStatement()
 		if s != nil {
 			prog.Statements = append(prog.Statements, s)
 		}
@@ -41,11 +50,32 @@ func (p *Parser) ParseProgram() *ast.Program {
 	return prog
 }
 
-func (p *Parser) parseStatement() *ast.Program {
+func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
 	case token.LET:
 		return p.parseLetStatement()
 	default:
 		return nil
 	}
+}
+
+func (p *Parser) parseLetStatement() *ast.LetStatement {
+	st := &ast.LetStatement{Token: p.curToken}
+
+	if p.peekToken.Type != token.IDENT {
+		return nil
+	}
+	p.nextToken()
+
+	st.Name = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+	
+    if p.peekToken.Type != token.ASSIGN {
+		return nil
+	}
+	p.nextToken()
+
+	for p.curToken.Type != token.SEMICOLON {
+		p.nextToken()
+	}
+    return st
 }
