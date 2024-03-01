@@ -4,6 +4,7 @@ import (
 	"BudLang/ast"
 	"BudLang/lexer"
 	"BudLang/token"
+    "fmt"
 )
 
 type Parser struct {
@@ -27,7 +28,7 @@ func (p *Parser) Errors() []string {
 	return p.errors
 }
 
-func (p *Parser) peekError(t token.Token) {
+func (p *Parser) peekError(t token.TokenType) {
 	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, p.peekToken.Type)
 	p.errors = append(p.errors, msg)
 }
@@ -43,15 +44,6 @@ func (p *Parser) ParseProgram() *ast.Program {
 
 	for p.curToken.Type != token.EOF {
 		s := p.parseStatement()
-
-		// case token.RETURN:
-		//     return p.parseReturnStatement()
-		// case token.IF:
-		//     return p.parseIfStatement()
-		// case token.FOR:
-		//     return p.parseForStatement()
-		// case token.ELSE:
-		//     return p.parseElseStatement()
 		if s != nil {
 			prog.Statements = append(prog.Statements, s)
 		}
@@ -90,7 +82,7 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	return st
 }
 
-func (p *Parser) expectToken(t token.Token) bool {
+func (p *Parser) expectToken(t token.TokenType) bool {
 	if p.peekToken.Type == t {
 		p.nextToken()
 		return true
