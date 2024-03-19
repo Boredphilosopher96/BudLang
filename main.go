@@ -8,13 +8,13 @@ import (
 )
 
 func main() {
-    user, err := user.Current()
-    if err != nil {
-        panic(err)
-    }
-    fmt.Println("Hey %s!! You are in the budlang console!",user.Username)
-    fmt.Println("Type in commands")
+	user, err := user.Current()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Hey %s!! You are in the budlang console!", user.Username)
+	fmt.Println("Type in commands")
 
-    repl.Start(os.Stdin, os.Stdout)
+	repl.Start(os.Stdin, os.Stdout)
 
 }

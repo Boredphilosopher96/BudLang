@@ -4,7 +4,7 @@ import (
 	"BudLang/ast"
 	"BudLang/lexer"
 	"BudLang/token"
-    "fmt"
+	"fmt"
 )
 
 type Parser struct {
@@ -13,10 +13,18 @@ type Parser struct {
 	curToken  token.Token
 	peekToken token.Token
 	errors    []string
+
+	prefixFuncMap map[token.TokenType]prefixParserFunc
+	infixFuncMap  map[token.TokenType]infixParserFunc
 }
 
 func New(l *lexer.Lexer) *Parser {
-	p := &Parser{l: l, errors: []string{}}
+	p := &Parser{
+		l:             l,
+		errors:        []string{},
+		prefixFuncMap: make(map[token.TokenType]prefixParserFunc),
+		infixFuncMap:  make(map[token.TokenType]infixParserFunc),
+	}
 
 	// Read the next 2 tokens to set both curToken and nextToken
 	p.nextToken()
@@ -59,7 +67,7 @@ func (p *Parser) parseStatement() ast.Statement {
 	case token.RETURN:
 		return p.parseReturnStatement()
 	default:
-		return nil
+		return p.parseExpressionStatement()
 	}
 }
 
@@ -101,4 +109,33 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	}
 
 	return st
+}
+
+func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
+    st := &ast.ExpressionStatement{Token: p.curToken}
+    st.ExpressionValue = p.parseExpression(LOWEST)
+
+    if p.peekToken.Type == token.SEMICOLON {
+        p.nextToken()
+    }
+    return st
+}
+
+type (
+	prefixParserFunc func() ast.Expression
+	infixParserFunc  func(ast.Expression) ast.Expression
+)
+
+const (
+	_ int = iota
+	LOWEST
+	EQUALS
+	LESSGREATER
+	SUM
+	PREFIX
+	CALL
+)
+
+func (p *Parser) parseExpression(precedence int) ast.Expression {
+    return nil
 }
