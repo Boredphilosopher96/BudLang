@@ -125,7 +125,7 @@ func (l *Lexer) getDigits() string {
 }
 
 func isAllowedChar(c byte) bool {
-	return (c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'a') || c == '_'
+	return (c <= 'z' && c >= 'a') || (c <= 'Z' && c >= 'A') || c == '_'
 }
 
 func isAllowedDigit(c byte) bool {

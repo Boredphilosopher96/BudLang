@@ -68,7 +68,7 @@ func (l *LetStatement) TokenLiteral() string { return l.Token.Literal }
 func (l *LetStatement) String() string {
     var output bytes.Buffer
     output.WriteString(l.TokenLiteral()+ " ")
-    output.WriteString(l.Name.String())
+    output.WriteString(l.Name.Value)
     output.WriteString(" = ")
     if l.Value != nil {
         output.WriteString(l.Value.String())
@@ -110,3 +110,7 @@ func (r *ExpressionStatement) String() string {
     return ""
 }
 
+type (
+    prefixParserFunc func() Expression
+    infixParserFunc func(Expression) Expression
+)
